@@ -1,0 +1,47 @@
+$def with (posts,table,title_list)
+<title>$table</title>
+<div class="container" >
+
+<p >
+<table class='table table-striped table-hover  text-center'>
+<tr >
+$for TITLE in title_list:
+    <th class='text-center'>$TITLE</th>
+</tr>
+<form action="" method="post" role="form" id="form_id" name="form_id" style="width:80%">
+<input type="hidden" id='table' name='table' value='$table'  >
+<input type="hidden" id='operate' name='operate' value='select'  >
+<p>
+$ list=['insert','delete','update','select']
+$for each in list:
+	<button type="button" id=$each form="form_id"
+	class="btn btn-primary"
+	onclick="document.form_id.operate.value='$each';
+	document.getElementById('$each').style.color='grey'">
+	$each
+	</button>
+<button type="reset" form="form_id" class="btn btn-default">Reset</button>
+<button type="submit" form="form_id" class="btn btn-success">Submit</button>
+</p>
+<p> <input type="text" class="form-control" id='execs' name='execs' ></p>
+<tr>
+$for TITLE in title_list:
+    <td class="form-group" >
+    <input type="text" class="form-control" id='$TITLE' name='$TITLE' >
+    </td>
+</tr>
+
+</form>
+
+
+
+$for each_row in posts:
+	<tr>
+	$for TITLE in title_list:
+		<td>$each_row[TITLE]</td>
+	</tr>
+<br>
+
+</table>
+</p>
+</div>
