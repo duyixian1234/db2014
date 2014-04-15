@@ -3,10 +3,10 @@ import web
 
 ### Url mappings
 urls=(
-    '^/$','Exec',
+    '^/$','content',
     '^/login', 'login',
     '^/logout', 'logout',
-     '^/(.*?)','Exec'
+     '^/(.*?)','content'
     )
 
 ###Application settings
@@ -47,20 +47,29 @@ def show(table='book'):
 render = web.template.render('templates',base='base')
 blank= web.template.render('templates',base='blank')
 
-class Exec:
+class content:
 
     def GET(self):
         if session.login==0:
             return web.seeother('/login')
-        data=web.input(table='book')
-        posts=show(data.table)
-        return render.view(posts,data.table,titles[data.table])
+        else:
+            data=web.input()
+            try:
+                posts=show(data.table)
+                return render.view(posts,data.table,titles[data.table])
+            except:
+                posts=show('book')
+                print posts
+                return render.view(posts,'book',titles['book'])
 
     def POST(self):
-        data=web.input(execs='select 0')
-        if data.execs!='':
-            query(data.execs)
-        return web.seeother(web.ctx.fullpath)
+        data=web.input()
+        try:
+            posts=show(data.table)
+            print data.operate
+            return render.view(posts,data.table,titles[data.table])
+        except:
+            return web.seeother('/?table=book')
 
 class login:
     def GET(self):
@@ -70,12 +79,14 @@ class login:
         user=web.input().user
         passwd=web.input().passwd
         myvars=dict(id=user)
-        if db.select('manager',myvars,where='id=$id') is not None:
+        try:
             table=db.select('manager',myvars,where='id=$id')
             correct=table[0]
             if correct['passwd']==passwd:
                 session.login=1
-        return web.seeother('/')
+                return web.seeother('/?table=book')
+        except:
+            return blank.login()
 
 class logout:
     def GET(self):

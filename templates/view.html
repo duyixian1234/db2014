@@ -5,43 +5,46 @@ $def with (posts,table,title_list)
 <p >
 <table class='table table-striped table-hover  text-center'>
 <tr >
+<th></th>
 $for TITLE in title_list:
     <th class='text-center'>$TITLE</th>
+<th></th>
 </tr>
-<form action="" method="post" role="form" id="form_id" name="form_id" style="width:80%">
+<form action="" method="post" role="form" id="form_id" name="form_id" style="width:80%" onSubmit="return confirm('是否提交?')">
 <input type="hidden" id='table' name='table' value='$table'  >
 <input type="hidden" id='operate' name='operate' value='select'  >
 <p>
-$ list=['insert','delete','update','select']
-$for each in list:
-	<button type="button" id=$each form="form_id"
-	class="btn btn-primary"
-	onclick="document.form_id.operate.value='$each';
-	document.getElementById('$each').style.color='grey'">
-	$each
-	</button>
-<button type="reset" form="form_id" class="btn btn-default">Reset</button>
-<button type="submit" form="form_id" class="btn btn-success">Submit</button>
+
 </p>
-<p> <input type="text" class="form-control" id='execs' name='execs' ></p>
 <tr>
+<td >
+<button type="submit" form="form_id" class="btn btn-success glyphicon glyphicon-plus" onmousedown="document.form_id.operate.value='insert'"> </button>
+
+</td>
 $for TITLE in title_list:
     <td class="form-group" >
     <input type="text" class="form-control" id='$TITLE' name='$TITLE' >
     </td>
+<td >
+    <button type="submit" form="form_id" class="btn btn-success glyphicon glyphicon-search" onmousedown="document.form_id.operate.value='select'"> </button>
+</td>
 </tr>
 
-</form>
+
 
 
 
 $for each_row in posts:
 	<tr>
+    <td></td>
 	$for TITLE in title_list:
 		<td>$each_row[TITLE]</td>
+    <td type='hide'>
+    <button type="submit" form="form_id" class="btn btn-danger glyphicon glyphicon-minus" onmousedown="document.form_id.operate.value='delete'"> </button>
+    </td>
 	</tr>
 <br>
-
+</form>
 </table>
 </p>
 </div>
