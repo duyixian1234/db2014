@@ -64,9 +64,33 @@ class content:
 
     def POST(self):
         data=web.input()
+        lists=titles[data.table]
+        unique=lists[0]
+        vars={}
+        for each_title in lists:
+            try:
+                if data[each_title]!='':
+                     vars[each_title]=data[each_title]
+            except:
+                pass
+        print vars
+        posts=show(data.table)
         try:
-            posts=show(data.table)
-            print data.operate
+            try:
+                if data.operate=='select':
+                    posts=db.select(data.table,where=web.db.sqlwhere(vars))
+                elif data.operate=='insert':
+                    query='insert into '+data.table+' set '
+                    print query
+                    query=query+unique+' = "'+vars[unique]+'"'
+                    for i in vars:
+                        if i!=unique:
+                            query=query+','+i+' = "'+vars[i]+'"'
+                    print query
+                    db.query(query)
+                    posts=show(data.table)
+            except:
+                    pass
             return render.view(posts,data.table,titles[data.table])
         except:
             return web.seeother('/?table=book')
