@@ -1,6 +1,5 @@
 """A simple library manage system using webpy 0.3 and mysql"""
 import web
-import model
 
 ### Url mappings
 urls=(
