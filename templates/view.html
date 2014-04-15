@@ -13,6 +13,7 @@ $for TITLE in title_list:
 <form action="" method="post" role="form" id="form_id" name="form_id" style="width:80%" >
 <input type="hidden" id='table' name='table' value='$table'  >
 <input type="hidden" id='operate' name='operate' value='select'  >
+<input type="hidden" id='unique' name='unique' value=''  >
 <tr>
 <td >
 <button type="submit" form="form_id" class="btn btn-success glyphicon glyphicon-plus" onmousedown="document.form_id.operate.value='insert'"> </button>
@@ -32,10 +33,8 @@ $for each_row in posts:
 	$for TITLE in title_list:
 		<td>$each_row[TITLE]</td>
     <td >
-    $ unique=title_list[0]
-    <button type="submit" form="form_id" class="btn btn-danger glyphicon glyphicon-minus" onmousedown="document.form_id.operate.value='delete';
-    document.form_id.'$each_row[unique]'.value='$unique'
-    "> </button>
+    $ unique=each_row[title_list[0]]
+    <button type="submit" form="form_id" class="btn btn-danger glyphicon glyphicon-minus" onmousedown="document.form_id.operate.value='delete';" onclick="document.form_id.unique.value='$unique';"> </button>
     </td>
 	</tr>
 </form>

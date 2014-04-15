@@ -73,27 +73,35 @@ class content:
                      vars[each_title]=data[each_title]
             except:
                 pass
-        print vars
+
         posts=show(data.table)
+
+
         try:
-            try:
-                if data.operate=='select':
-                    posts=db.select(data.table,where=web.db.sqlwhere(vars))
-                elif data.operate=='insert':
-                    query='insert into '+data.table+' set '
-                    print query
-                    query=query+unique+' = "'+vars[unique]+'"'
-                    for i in vars:
-                        if i!=unique:
-                            query=query+','+i+' = "'+vars[i]+'"'
-                    print query
-                    db.query(query)
-                    posts=show(data.table)
-            except:
+            if data.operate=='select':
+                posts=db.select(data.table,where=web.db.sqlwhere(vars))
+            elif data.operate=='insert':
+                query='insert into '+data.table+' set '
+                print query
+                query=query+unique+' = "'+vars[unique]+'"'
+                for i in vars:
+                    if i!=unique:
+                        query=query+','+i+' = "'+vars[i]+'"'
+                print query
+                db.query(query)
+                posts=show(data.table)
+            elif data.operate=='delete':
+                try:
+                    vars[unique]=data.unique
+                except:
                     pass
-            return render.view(posts,data.table,titles[data.table])
+                db.delete(data.table,where=web.db.sqlwhere(vars))
+                posts=show(data.table)
+            else:
+                pass
         except:
-            return web.seeother('/?table=book')
+            pass
+        return render.view(posts,data.table,titles[data.table])
 
 class login:
     def GET(self):
@@ -116,9 +124,6 @@ class logout:
     def GET(self):
         session.login=0
         return web.seeother('/login')
-
-
-
 
 
 if __name__=='__main__':
