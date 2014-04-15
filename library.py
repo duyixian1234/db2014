@@ -1,19 +1,28 @@
 """A simple library manage system using webpy 0.3 and mysql"""
 import web
+import model
 
 ### Url mappings
 urls=(
-    '^/$','content',
+    '^/$','index',
     '^/login', 'login',
     '^/logout', 'logout',
-     '^/(.*?)','content'
+     '^/(.*?)','index'
     )
 
 ###Application settings
 app=web.application(urls,globals())
 
+if web.config.get('_session') is None:
+    session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={
+        'login':0,
+        'id':'',
+    })
+    web.config._session = session
+else:
+    session = web.config._session
 
-###Variables
+#variables
 
 titles={'book':['bno','category','title','press','year','price','total','stock'],
         'card':['cno','name','department','type'],
@@ -22,48 +31,80 @@ titles={'book':['bno','category','title','press','year','price','total','stock']
         }
 
 db=web.database(dbn='mysql',db='library',user='root',passwd='0800')
-
-
-if web.config.get('_session') is None:
-    session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={
-        'login':0,
-        'privilege':0
-    })
-    web.config._session = session
-else:
-    session = web.config._session
-
+current_table=''
 
 ###Functions
+
+def logged():
+    if session.login==1:
+        return True
+    else:
+        return False
+
+def check(user,passwd):
+    myvars=dict(id=user)
+    try:
+        table=db.select('manager',myvars,where=web.db.sqlwhere(myvars))
+        real_passwd=table[0]['passwd']
+        if real_passwd==passwd:
+            session.login=1
+            session.id=user
+        else:
+            pass
+    except:
+        pass
+
 def query(execs='select 0'):
     return db.query(execs)
 
-def show(table='book'):
+def show(table='manager'):
     return db.select(table,_test=False)
 
-
-
 ###Templates
-render = web.template.render('templates',base='base')
-blank= web.template.render('templates',base='blank')
 
-class content:
+render = web.template.render('templates',base='base',globals=globals())
+blank= web.template.render('templates',base='blank',globals=globals())
 
+###Main
+class login:
+    """Log in"""
     def GET(self):
-        if session.login==0:
-            return web.seeother('/login')
+        if logged():
+            return web.seeother('/')
+        return blank.login()
+    def POST(self):
+        user=web.input().user
+        passwd=web.input().passwd
+        check(user,passwd)
+        if logged():
+            return web.seeother('/')
         else:
+            return blank.login()
+
+class logout:
+    """Log out"""
+    def GET(self):
+        session.login=0
+        return web.seeother('/login')
+
+class index:
+    """index page"""
+    def GET(self):
+        if logged():
             data=web.input()
             try:
+                current_table=data.table
+                print current_table
                 posts=show(data.table)
-                return render.view(posts,data.table,titles[data.table])
+                return render.view(posts,data.table,titles[data.table],session.id)
             except:
-                posts=show('book')
-                print posts
-                return render.view(posts,'book',titles['book'])
+                return web.seeother('/?table=manager')
+        else:
+            return web.seeother('/login')
 
     def POST(self):
         data=web.input()
+        current_table=data.table
         lists=titles[data.table]
         unique=lists[0]
         vars={}
@@ -82,13 +123,19 @@ class content:
                 posts=db.select(data.table,where=web.db.sqlwhere(vars))
             elif data.operate=='insert':
                 query='insert into '+data.table+' set '
-                print query
                 query=query+unique+' = "'+vars[unique]+'"'
                 for i in vars:
                     if i!=unique:
                         query=query+','+i+' = "'+vars[i]+'"'
-                print query
                 db.query(query)
+                print query
+                print data.table
+                if data.table=='borrow':
+                    print 'begin to borrow'
+                    borrow='update  book set stock=stock-1 where bno = "'
+                    borrow=borrow+vars['bno']+'"'
+                    print borrow
+                    db.query(borrow)
                 posts=show(data.table)
             elif data.operate=='delete':
                 try:
@@ -101,30 +148,7 @@ class content:
                 pass
         except:
             pass
-        return render.view(posts,data.table,titles[data.table])
-
-class login:
-    def GET(self):
-        return blank.login()
-
-    def POST(self):
-        user=web.input().user
-        passwd=web.input().passwd
-        myvars=dict(id=user)
-        try:
-            table=db.select('manager',myvars,where='id=$id')
-            correct=table[0]
-            if correct['passwd']==passwd:
-                session.login=1
-                return web.seeother('/?table=book')
-        except:
-            return blank.login()
-
-class logout:
-    def GET(self):
-        session.login=0
-        return web.seeother('/login')
-
+        return render.view(posts,data.table,titles[data.table],session.id)
 
 if __name__=='__main__':
     app.run()
