@@ -1,15 +1,15 @@
 CREATE TABLE `book` (
-  `bno` char(8) NOT NULL,
-  `category` char(10) DEFAULT NULL,
-  `title` varchar(40) DEFAULT NULL,
-  `press` varchar(30) DEFAULT NULL,
+  `bno` varchar(20) NOT NULL DEFAULT '',
+  `category` char(50) DEFAULT NULL,
+  `title` varchar(50) DEFAULT NULL,
+  `press` varchar(50) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
-  `author` varchar(20) DEFAULT NULL,
+  `author` varchar(50) DEFAULT NULL,
   `price` decimal(7,2) DEFAULT NULL,
   `total` int(11) DEFAULT NULL,
   `stock` int(11) DEFAULT NULL,
   PRIMARY KEY (`bno`)
-)
+) E
 
 CREATE TABLE `card` (
   `cno` char(7) NOT NULL,

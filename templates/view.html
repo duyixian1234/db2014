@@ -5,6 +5,19 @@ $var table: $table
 <div class="container" >
 
 <p >
+<form action="" enctype="multipart/form-data" method="post" role="form" id="form_id" name="form_id" style="width:80%" >
+<input type="hidden" id='table' name='table' value='$table'  >
+<input type="hidden" id='operate' name='operate' value='select'  >
+<input type="hidden" id='unique' name='unique' value=''  >
+<table class='table table-striped table-hover  text-center'>
+$if table=='book':
+    <tr>
+    <td>
+        <input type="file" class="form-control " name="booklists" /></td>
+    <td>
+        <button type="submit" form="form_id" class="btn btn-success glyphicon glyphicon-plus" onmousedown="document.form_id.operate.value='insert'"> </button></td>
+    </tr>
+</table>
 <table class='table table-striped table-hover  text-center'>
 <tr >
 <th></th>
@@ -12,11 +25,6 @@ $for TITLE in title_list:
     <th class='text-center'>$TITLE</th>
 <th></th>
 </tr>
-<form action="" method="post" role="form" id="form_id" name="form_id" style="width:80%" >
-<input type="hidden" id='table' name='table' value='$table'  >
-<input type="hidden" id='operate' name='operate' value='select'  >
-<input type="hidden" id='unique' name='unique' value=''  >
-
 $if table!='manager':
     <tr>
     <td >

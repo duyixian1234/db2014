@@ -30,7 +30,7 @@ titles={'book':['bno','category','title','press','year','price','total','stock']
         }
 
 db=web.database(dbn='mysql',db='library',user='root',passwd='0800')
-current_table=''
+
 
 ###Functions
 
@@ -57,7 +57,7 @@ def query(execs='select 0'):
     return db.query(execs)
 
 def show(table='manager'):
-    return db.select(table,_test=False)
+    return db.select(table,limit=50,_test=False)
 
 ###Templates
 
@@ -92,8 +92,6 @@ class index:
         if logged():
             data=web.input()
             try:
-                current_table=data.table
-                print current_table
                 posts=show(data.table)
                 return render.view(posts,data.table,titles[data.table],session.id)
             except:
@@ -102,8 +100,7 @@ class index:
             return web.seeother('/login')
 
     def POST(self):
-        data=web.input()
-        current_table=data.table
+        data=web.input(booklists={})
         lists=titles[data.table]
         unique=lists[0]
         vars={}
@@ -113,9 +110,26 @@ class index:
                      vars[each_title]=data[each_title]
             except:
                 pass
-
+        try:
+            for line in data.booklists.file:
+                try:
+                    query='insert into book values'
+                    line=line[3:-4]
+                    words=line.split(', ')
+                    query+='("'+words[0]+'"'
+                    for i in range(1,len(words)):
+                        if i in [1,2,3,5]:
+                            query+=',"'+words[i]+'"'
+                        else:
+                            query+=','+words[i]
+                    query+=','+words[len(words)-1]
+                    query+=')'
+                    db.query(query)
+                except:
+                    pass
+        except:
+            pass
         posts=show(data.table)
-
 
         try:
             if data.operate=='select':
@@ -126,15 +140,27 @@ class index:
                 for i in vars:
                     if i!=unique:
                         query=query+','+i+' = "'+vars[i]+'"'
-                db.query(query)
-                print query
-                print data.table
-                if data.table=='borrow':
-                    print 'begin to borrow'
-                    borrow='update  book set stock=stock-1 where bno = "'
-                    borrow=borrow+vars['bno']+'"'
-                    print borrow
-                    db.query(borrow)
+                if data.table=='borrow' :
+                    if data.borrow_date!='':
+                        borrow='update  book set stock=stock-1 where bno = "'
+                        borrow=borrow+vars['bno']+'"'
+                        try:
+                            db.query(borrow)
+                            db.query(query)
+                        except:
+                            pass
+                    elif data.return_date!='':
+                        borrow='update  book set stock=stock+1 where bno = "'
+                        borrow=borrow+vars['bno']+'"'
+                        query='update borrow set return_date = "'
+                        query+=vars['return_date']+'" where cno = "'+vars['cno']+'" and bno = "'+vars['bno']+'" and return_date is NULL  order by borrow_date  limit 1'
+                        try:
+                            db.query(borrow)
+                            db.query(query)
+                        except:
+                            pass
+                else:
+                    db.query(query)
                 posts=show(data.table)
             elif data.operate=='delete':
                 try:
