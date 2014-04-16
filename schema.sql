@@ -40,3 +40,13 @@ CREATE TABLE `manager` (
   CONSTRAINT `borrow_ibfk_2` FOREIGN KEY (`bno`) REFERENCES `book` (`bno`) ON UPDATE CASCADE,
   CONSTRAINT `borrow_ibfk_3` FOREIGN KEY (`id`) REFERENCES `manager` (`id`) ON UPDATE CASCADE
 )
+
+create trigger borrow_limit before insert on borrow
+for each row
+begin
+        declare num int;
+select stock into num from book where bno=new.bno;
+if num=0 then
+set new.cno=NULL;
+end if;
+end |

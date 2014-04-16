@@ -133,7 +133,28 @@ class index:
 
         try:
             if data.operate=='select':
-                posts=db.select(data.table,where=web.db.sqlwhere(vars))
+                if data.table!='book' or data.year=='' and data.price=='':
+                    posts=db.select(data.table,where=web.db.sqlwhere(vars))
+                else:
+                    fr='1000'
+                    to='3999'
+                    small='0.00'
+                    large='99999.99'
+                    try:
+                        fr,to=vars['year'].split(':')
+                        del vars['year']
+                    except:
+                        pass
+                    try:
+                        small,large=vars['price'].split(':')
+                        del vars['price']
+                    except:
+                        pass
+                    wheres='select * from book where '
+                    for each in vars:
+                        wheres+=each+' = "'+vars[each]+'" and '
+                    wheres+='year >= '+fr+' and year <= '+to+' and price >= '+small+' and price <= '+large
+                    posts=db.query(wheres)
             elif data.operate=='insert':
                 query='insert into '+data.table+' set '
                 query=query+unique+' = "'+vars[unique]+'"'
