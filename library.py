@@ -166,7 +166,27 @@ class index:
                 for i in vars:
                     if i!=unique:
                         query=query+','+i+' = "'+vars[i]+'"'
-                db.query(query)
+                if data.table=='borrow' :
+                    if data.borrow_date!='':
+                        borrow='update  book set stock=stock-1 where bno = "'
+                        borrow=borrow+vars['bno']+'"'
+                        try:
+                            db.query(query)
+                            db.query(borrow)
+                        except:
+                            pass
+                    elif data.return_date!='':
+                        borrow='update  book set stock=stock+1 where bno = "'
+                        borrow=borrow+vars['bno']+'"'
+                        query='update borrow set return_date = "'
+                        query+=vars['return_date']+'" where cno = "'+vars['cno']+'" and bno = "'+vars['bno']+'" and return_date is NULL  order by borrow_date  limit 1'
+                        try:
+                            db.query(borrow)
+                            db.query(query)
+                        except:
+                            pass
+                else:
+                    db.query(query)
                 posts=show(data.table)
             elif data.operate=='delete':
                 try:

@@ -50,30 +50,4 @@ if num=0 then
 set new.cno=NULL;
 end if;
 end
-
- create trigger before_borrow  before insert on borrow
-     for each row
-     begin
-          declare num int;
-          if new.borrow_date is null and new.return_date is null
-          then
-         set new.cno=null;
-         else if new.borrow_date is not  null and new.return_date is not null
-          then
-         set new.cno=null;
-         else  if new.borrow_date is not  null
-         then select stock into num from book where bno=new.bno;
-          if num>0 then
-            update book set stock=stock-1 where bno=new.bno;
-            else set new.cno=null;
-          end if;
-         else if new.return_date is not null then
-         update book set stock=stock-1 where bno=new.bno;
-          update borrow set return_date=new.return_date where cno=new.cno and bno=new.bno limit 1;
-            set new.cno=null;
-         end if;
-         end if;
-         end if;
-         end if;
-       end;
-     ||
+||
