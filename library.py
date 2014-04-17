@@ -1,4 +1,4 @@
-"""A simple library manage system using webpy 0.3 and mysql"""
+"""A simple library manage system using webpy 0.3,mysql and bootstrap."""
 import web
 
 ### Url mappings
@@ -12,6 +12,7 @@ urls=(
 ###Application settings
 app=web.application(urls,globals())
 
+###Session settings
 if web.config.get('_session') is None:
     session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={
         'login':0,
@@ -21,7 +22,7 @@ if web.config.get('_session') is None:
 else:
     session = web.config._session
 
-#variables
+#variables defination
 
 titles={'book':['bno','category','title','press','year','price','total','stock'],
         'card':['cno','name','department','type'],
@@ -32,15 +33,17 @@ titles={'book':['bno','category','title','press','year','price','total','stock']
 db=web.database(dbn='mysql',db='library',user='root',passwd='0800')
 
 
-###Functions
+###Functions defination
 
 def logged():
+    """If login in or not"""
     if session.login==1:
         return True
     else:
         return False
 
 def check(user,passwd):
+    """Check whether the user name and password is effective."""
     myvars=dict(id=user)
     try:
         table=db.select('manager',myvars,where=web.db.sqlwhere(myvars))
@@ -54,9 +57,11 @@ def check(user,passwd):
         pass
 
 def query(execs='select 0'):
+    """Execute Mysql query."""
     return db.query(execs)
 
 def show(table='manager'):
+    """Show tables"""
     return db.select(table,limit=50,_test=False)
 
 ###Templates
