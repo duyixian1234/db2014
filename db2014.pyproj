@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1147324e-921d-4cbc-82c4-cddb45ea096f}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>library.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="book.txt" />
+    <Compile Include="library.py" />
+    <Content Include="static\favicon.ico" />
+    <Content Include="templates\base.html" />
+    <Content Include="templates\blank.html" />
+    <Content Include="templates\index.html" />
+    <Content Include="templates\login.html" />
+    <Content Include="templates\view.html" />
+    <Content Include="static\css\bootstrap-theme.css" />
+    <Content Include="static\css\bootstrap-theme.min.css" />
+    <Content Include="static\css\bootstrap.css" />
+    <Content Include="static\css\bootstrap.min.css" />
+    <Content Include="static\css\signin.css" />
+    <Content Include="static\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="static\js\bootstrap.js" />
+    <Content Include="static\js\bootstrap.min.js" />
+    <Content Include="static\js\jquery.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="static" />
+    <Folder Include="static\css" />
+    <Folder Include="static\fonts" />
+    <Folder Include="static\js" />
+    <Folder Include="templates" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+</Project>
