@@ -2,8 +2,8 @@ $def with (posts,table,title_list,id)
 $var title: 图书馆
 $var table: $table
 $ name_list={'bno':'书籍序号','category':'书籍类别','title':'书籍标题','press':'出版社','year':'出版年份','price':'书籍价格','total':'全部库存','stock':'剩余册数','cno':'借书卡序号','name':'持有人姓名','department':'所在学院','type':'借书卡类型','borrow_date':'借出日期','return_date':'归还日期','id':'管理员序号','tel':'联系方式'}
-<div class="container" align='center' style="width:auto">
-<form action="" enctype="multipart/form-data" method="post" role="form" id="form_id" name="form_id" style="width:80%" >
+<div class="container" align='center'>
+<form action="" enctype="multipart/form-data" method="post" role="form" id="form_id" name="form_id"  >
 <input type="hidden" id='table' name='table' value='$table'  >
 <input type="hidden" id='operate' name='operate' value='select'  >
 <input type="hidden" id='unique' name='unique' value=''  >

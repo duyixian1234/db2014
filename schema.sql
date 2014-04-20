@@ -41,6 +41,7 @@ CREATE TABLE `manager` (
   CONSTRAINT `borrow_ibfk_3` FOREIGN KEY (`id`) REFERENCES `manager` (`id`) ON UPDATE CASCADE
 )
 
+delimiter ||
 create trigger borrow_limit before insert on borrow
 for each row
 begin

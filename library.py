@@ -1,4 +1,4 @@
-"""A simple library manage system using webpy 0.3,mysql and bootstrap."""
+"""A simple library manage system using webpy 0.3,Mysql and bootstrap."""
 import web
 import model
 

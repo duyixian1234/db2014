@@ -8,7 +8,7 @@ titles={'book':['bno','category','title','press','year','price','total','stock']
         'manager':['id','name','tel']
         }
 
-
+###Connencting the database
 db=web.database(dbn='mysql',db='library',user='root',passwd='0800')
 
 
@@ -22,6 +22,7 @@ def show(table='manager'):
 
 
 def operate(data):
+    """Deal with the post and send it to Mysql"""
     lists=titles[data.table]
     unique=lists[0]
     vars={}
@@ -53,7 +54,7 @@ def operate(data):
     posts=show(data.table)
     try:
         if data.operate=='select':
-            if data.table!='book' or data.year=='' and data.price=='':
+            if data.table!='book':
                 posts=db.select(data.table,where=web.db.sqlwhere(vars))
             else:
                 fr='1000'
